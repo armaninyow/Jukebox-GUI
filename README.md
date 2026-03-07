@@ -49,8 +49,8 @@ Regular Right-Click still works as vanilla — you can insert and eject discs wi
   <summary></summary>
    
 If you encounter bugs or wish to contribute:
-* [Report any problems you find.](https://github.com/armaninyow/Bee-GUI/discussions/categories/issues)
-* [Share your ideas for new features.](https://github.com/armaninyow/Bee-GUI/discussions/categories/suggestions)
+* [Report any problems you find.](https://github.com/armaninyow/Jukebox-GUI/discussions/categories/issues)
+* [Share your ideas for new features.](https://github.com/armaninyow/Jukebox-GUI/discussions/categories/suggestions)
 </details>
 
 ## Credits
