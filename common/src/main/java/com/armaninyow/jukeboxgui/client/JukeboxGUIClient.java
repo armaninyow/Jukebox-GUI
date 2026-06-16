@@ -9,6 +9,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
 
 @Environment(EnvType.CLIENT)
 public class JukeboxGUIClient implements ClientModInitializer {
@@ -24,8 +26,25 @@ public class JukeboxGUIClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(JukeboxGuiPacket.Payload.ID, (payload, context) -> {
             context.client().execute(() -> {
                 Minecraft client = context.client();
+
+                // Always check if disc was removed/swapped, even when GUI is closed,
+                // to clear stale pause state so the new disc isn't suppressed
+                BlockPos pos = payload.pos();
+                ItemStack incoming = payload.discStack().orElse(ItemStack.EMPTY);
+                if (JukeboxManagementScreen.pausedPositions.contains(pos)) {
+                    if (incoming.isEmpty()) {
+                        // Disc removed — clear pause state
+                        JukeboxManagementScreen.pausedPositions.remove(pos);
+                        JukeboxManagementScreen.pausedElapsedMap.remove(pos);
+                    }
+                }
+                if (incoming.isEmpty()) {
+                    JukeboxManagementScreen.clientPlayedPositions.remove(pos);
+                }
+
+                // Update the screen if it's open for this position
                 if (client.screen instanceof JukeboxManagementScreen screen
-                    && screen.getPos().equals(payload.pos())) {
+                    && screen.getPos().equals(pos)) {
                     screen.updateData(payload);
                 }
             });

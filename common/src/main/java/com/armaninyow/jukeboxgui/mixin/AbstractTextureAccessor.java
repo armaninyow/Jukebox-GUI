@@ -1,0 +1,15 @@
+package com.armaninyow.jukeboxgui.mixin;
+
+import com.mojang.blaze3d.textures.GpuSampler;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
+@Mixin(AbstractTexture.class)
+public interface AbstractTextureAccessor {
+    @Accessor("sampler")
+    GpuSampler jukeboxgui$getSampler();
+
+    @Accessor("sampler")
+    void jukeboxgui$setSampler(GpuSampler sampler);
+}

@@ -9,7 +9,7 @@ import net.minecraft.resources.Identifier;
 
 public record JukeboxGuiActionPacket(Action action, BlockPos pos) implements CustomPacketPayload {
 
-    public enum Action { TOGGLE_PLAY, INSERT_DISC, EJECT_DISC }
+    public enum Action { TOGGLE_PLAY, INSERT_DISC, EJECT_DISC, RESTART_DISC }
 
     public static final Identifier ACTION_ID =
         Identifier.fromNamespaceAndPath(JukeboxGUI.MOD_ID, "gui_action");

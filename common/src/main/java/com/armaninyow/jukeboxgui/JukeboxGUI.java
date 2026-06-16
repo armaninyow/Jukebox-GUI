@@ -2,6 +2,7 @@ package com.armaninyow.jukeboxgui;
 
 import com.armaninyow.jukeboxgui.network.JukeboxGuiActionPacket;
 import com.armaninyow.jukeboxgui.network.JukeboxGuiPacket;
+import com.armaninyow.jukeboxgui.network.JukeboxGuiPausePacket;
 import com.armaninyow.jukeboxgui.network.JukeboxGuiRefreshPacket;
 import com.armaninyow.jukeboxgui.screen.JukeboxScreenHandler;
 import net.fabricmc.api.ModInitializer;
@@ -54,6 +55,24 @@ public class JukeboxGUI implements ModInitializer {
 
         PayloadTypeRegistry.serverboundPlay().register(JukeboxGuiRefreshPacket.ID, JukeboxGuiRefreshPacket.CODEC);
         PayloadTypeRegistry.serverboundPlay().register(JukeboxGuiActionPacket.ID, JukeboxGuiActionPacket.CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(JukeboxGuiPausePacket.ID, JukeboxGuiPausePacket.CODEC);
+
+        ServerPlayNetworking.registerGlobalReceiver(JukeboxGuiPausePacket.ID, (payload, context) -> {
+            ServerPlayer player = context.player();
+            BlockPos pos = payload.pos();
+            ServerLevel world = (ServerLevel) player.level();
+            if (!(world.getBlockEntity(pos) instanceof JukeboxBlockEntity jukebox)) return;
+
+            com.armaninyow.jukeboxgui.IJukeboxSongPlayer mixinPlayer =
+                (com.armaninyow.jukeboxgui.IJukeboxSongPlayer) jukebox.getSongPlayer();
+
+            if (payload.pausing()) {
+                mixinPlayer.jukeboxgui$setPaused(true);
+            } else {
+                mixinPlayer.jukeboxgui$setPaused(false);
+            }
+            JukeboxGuiPacket.sendToClient(player, jukebox, pos);
+        });
 
         ServerPlayNetworking.registerGlobalReceiver(JukeboxGuiRefreshPacket.ID, (payload, context) -> {
             ServerPlayer player = context.player();
@@ -71,13 +90,20 @@ public class JukeboxGUI implements ModInitializer {
             if (!(world.getBlockEntity(pos) instanceof JukeboxBlockEntity jukebox)) return;
 
             switch (payload.action()) {
+                case RESTART_DISC -> {
+                    ItemStack disc = jukebox.getTheItem();
+                    if (!disc.isEmpty()) {
+                        ((com.armaninyow.jukeboxgui.IJukeboxSongPlayer) jukebox.getSongPlayer()).jukeboxgui$setPaused(false);
+                        jukebox.getSongPlayer().stop(world, world.getBlockState(pos));
+                        jukebox.setTheItem(disc);
+                        JukeboxGuiPacket.sendToClient(player, jukebox, pos);
+                    }
+                }
                 case TOGGLE_PLAY -> {
                     if (!jukebox.getTheItem().isEmpty()) {
                         if (jukebox.getSongPlayer().isPlaying()) {
-                            // stop(level, blockState)
                             jukebox.getSongPlayer().stop(world, world.getBlockState(pos));
                         } else {
-                            // Re-insert triggers play via setTheItem
                             ItemStack disc = jukebox.getTheItem();
                             jukebox.setTheItem(disc);
                         }
@@ -87,7 +113,7 @@ public class JukeboxGUI implements ModInitializer {
                 case EJECT_DISC -> {
                     ItemStack disc = jukebox.getTheItem().copy();
                     if (!disc.isEmpty()) {
-                        // setTheItem(EMPTY) calls stop internally and updates block state
+                        ((com.armaninyow.jukeboxgui.IJukeboxSongPlayer) jukebox.getSongPlayer()).jukeboxgui$setPaused(false);
                         jukebox.setTheItem(ItemStack.EMPTY);
                         if (!player.getInventory().add(disc)) {
                             player.drop(disc, false);
