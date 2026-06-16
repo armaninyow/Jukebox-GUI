@@ -23,6 +23,9 @@
 			"com.armaninyow.jukeboxgui.client.JukeboxGUIClient"
 		]
 	},
+	"mixins": [
+		"jukeboxgui.mixins.json"
+	],
 	"depends": {
 		"fabricloader": ">=0.18.6",
 		"minecraft": ">=26 <26.2",
