@@ -19,6 +19,9 @@ If you encounter bugs or wish to contribute:
 <details>
   <summary></summary>
    
+### 4.1.0—26.x
+* Added the ability to pause and resume discs
+* Added new theme
 ### 4.0.0—26.x
 * Added support for Minecraft 26.1, 26.1.1, and 26.1.2
 ### 3.1.0—1.21.x
