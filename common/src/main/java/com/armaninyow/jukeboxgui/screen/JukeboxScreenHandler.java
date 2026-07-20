@@ -18,12 +18,10 @@ public class JukeboxScreenHandler extends AbstractContainerMenu {
     private final ContainerLevelAccess context;
     private final BlockPos pos;
 
-    /** Client-side constructor */
     public JukeboxScreenHandler(int syncId, Inventory playerInventory, BlockPos pos) {
         this(syncId, playerInventory, new SimpleContainer(1), ContainerLevelAccess.NULL, pos);
     }
 
-    /** Server-side constructor */
     public JukeboxScreenHandler(int syncId, Inventory playerInventory,
                                 Container jukeboxInventory, ContainerLevelAccess context,
                                 BlockPos pos) {
@@ -34,8 +32,7 @@ public class JukeboxScreenHandler extends AbstractContainerMenu {
         this.pos = pos;
         jukeboxInventory.startOpen(playerInventory.player);
 
-        // Disc slot — only accepts music discs
-        this.addSlot(new Slot(jukeboxInventory, 0, 80, 17) {
+        this.addSlot(new Slot(jukeboxInventory, 0, -1000, -1000) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.has(DataComponents.JUKEBOX_PLAYABLE);
@@ -44,12 +41,10 @@ public class JukeboxScreenHandler extends AbstractContainerMenu {
             public int getMaxStackSize() { return 1; }
         });
 
-        // Player inventory (27 slots)
         for (int row = 0; row < 3; row++)
             for (int col = 0; col < 9; col++)
                 this.addSlot(new Slot(playerInventory, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
 
-        // Hotbar (9 slots)
         for (int col = 0; col < 9; col++)
             this.addSlot(new Slot(playerInventory, col, 8 + col * 18, 142));
     }

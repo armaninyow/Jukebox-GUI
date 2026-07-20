@@ -33,7 +33,6 @@ import net.minecraft.world.level.block.entity.JukeboxBlockEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// 26.1.x (Mojang mappings + Fabric API 0.149.0)
 public class JukeboxGUI implements ModInitializer {
     public static final String MOD_ID = "jukeboxgui";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
@@ -128,7 +127,6 @@ public class JukeboxGUI implements ModInitializer {
                         && jukebox.getTheItem().isEmpty()) {
                         ItemStack toInsert = cursorItem.copyWithCount(1);
                         cursorItem.shrink(1);
-                        // setTheItem calls play internally and updates block state
                         jukebox.setTheItem(toInsert);
                         JukeboxGuiPacket.sendToClient(player, jukebox, pos);
                     }
@@ -150,7 +148,6 @@ public class JukeboxGUI implements ModInitializer {
             if (player instanceof ServerPlayer serverPlayer) {
                 ServerLevel serverWorld = (ServerLevel) world;
 
-                // Proxy that mirrors slot changes back to the jukebox
                 final boolean[] initializing = {true};
                 SimpleContainer proxyInv = new SimpleContainer(1) {
                     @Override
@@ -160,7 +157,6 @@ public class JukeboxGUI implements ModInitializer {
                         ItemStack newDisc = this.getItem(0);
                         ItemStack current = jukebox.getTheItem();
                         if (!ItemStack.matches(newDisc, current)) {
-                            // setTheItem handles stop/play/blockstate internally
                             jukebox.setTheItem(newDisc.isEmpty() ? ItemStack.EMPTY : newDisc.copy());
                             JukeboxGuiPacket.sendToClient(serverPlayer, jukebox, pos);
                         }

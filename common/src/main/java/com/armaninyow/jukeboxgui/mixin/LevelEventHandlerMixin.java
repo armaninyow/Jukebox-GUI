@@ -22,7 +22,6 @@ public class LevelEventHandlerMixin {
             ci.cancel();
             return;
         }
-        // Track that client sound actually started for this position
         JukeboxManagementScreen.clientPlayedPositions.add(pos);
     }
 }

@@ -15,7 +15,6 @@ import net.minecraft.world.level.block.entity.JukeboxBlockEntity;
 
 import java.util.Optional;
 
-// 26.1.x (Mojang mappings)
 public class JukeboxGuiPacket {
 
     public static final Identifier OPEN_GUI_ID =
@@ -66,7 +65,6 @@ public class JukeboxGuiPacket {
     }
 
     public static void sendToClient(ServerPlayer player, JukeboxBlockEntity jukebox, BlockPos pos) {
-        // In 26.1 use getTheItem() instead of getItem(0)
         ItemStack disc = jukebox.getTheItem();
         Optional<ItemStack> discOpt = disc.isEmpty() ? Optional.empty() : Optional.of(disc);
 
@@ -74,7 +72,6 @@ public class JukeboxGuiPacket {
         float totalSeconds = 0f;
 
         if (discOpt.isPresent()) {
-            // JukeboxSong.fromStack takes only ItemStack in 26.1 (no registries arg)
             var songOpt = JukeboxSong.fromStack(discOpt.get());
             if (songOpt.isPresent()) {
                 JukeboxSong song = songOpt.get().value();
@@ -87,7 +84,6 @@ public class JukeboxGuiPacket {
             }
         }
 
-        // Read tick count directly from JukeboxSongPlayer — no NBT needed
         boolean isPlaying = jukebox.getSongPlayer().isPlaying();
         long tickCount = isPlaying ? jukebox.getSongPlayer().getTicksSinceSongStarted() : 0L;
         boolean isFinished = !disc.isEmpty() && !isPlaying;

@@ -7,11 +7,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
-/**
- * Sent from client to server when the player clicks pause or resume.
- * For PAUSE: carries the current ticksSinceSongStarted so server can restore it on resume.
- * For RESUME: ticksSinceSongStarted is the saved value to restore.
- */
 public record JukeboxGuiPausePacket(boolean pausing, long ticksSinceSongStarted, BlockPos pos)
         implements CustomPacketPayload {
 

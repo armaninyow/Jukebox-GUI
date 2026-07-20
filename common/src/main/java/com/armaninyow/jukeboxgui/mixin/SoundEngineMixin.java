@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(SoundEngine.class)
 public class SoundEngineMixin {
 
-    /** After resume(), re-pause any channels for positions we have paused. */
     @Inject(method = "resume", at = @At("TAIL"))
     private void onResumePost(CallbackInfo ci) {
         if (!JukeboxManagementScreen.hasAnyPausedPosition()) return;
@@ -25,7 +24,6 @@ public class SoundEngineMixin {
         }
     }
 
-    /** Block anything restoring RECORDS volume while any jukebox is paused. */
     @Inject(method = "updateCategoryVolume", at = @At("HEAD"), cancellable = true)
     private void onUpdateCategoryVolume(SoundSource source, float gain, CallbackInfo ci) {
         if (source == SoundSource.RECORDS && gain > 0f
