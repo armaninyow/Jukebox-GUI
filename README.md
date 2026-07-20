@@ -19,6 +19,13 @@ If you encounter bugs or wish to contribute:
 <details>
   <summary></summary>
    
+### 4.2.0—26.x
+* Added 9 more themes
+* Added a blink animation to "INSERT DISC", flips every 1 second
+* Added "Bounce" disc support
+* Updated theme switching, right-click the theme button to cycle backward (left-click still cycles forward)
+* Changed theme switching system from numerical to alphabetical to accomodate themes 10 and above
+* Fixed a leftover invisible disc slot lingering at its old fixed GUI position in Theme 2
 ### 4.1.0—26.x
 * Added the ability to pause and resume discs
 * Added new theme
